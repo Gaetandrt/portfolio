@@ -56,7 +56,7 @@ function Contact() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 }}
           transition={{ duration: 0.6, delay: 0.4 }}
         >
-          Vous avez un projet en tête ? N'hésitez pas à me contacter !
+          Vous avez un projet en tête ? N&apos;hésitez pas à me contacter !
         </motion.p>
         <motion.div
           className="flex justify-center space-x-6"

@@ -11,7 +11,6 @@ function StackContainer({
   children,
   className,
   index = 0,
-  totalItems = 1,
 }: Props) {
   const zIndex = index + 1;
 

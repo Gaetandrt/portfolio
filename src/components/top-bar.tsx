@@ -7,12 +7,14 @@ interface TopBarProps {
   scrollContainer?: React.RefObject<HTMLDivElement | null>;
   sections?: Array<{ className: string }>;
   onNavigate?: (sectionIndex: number) => void;
+  isHidden?: boolean;
 }
 
 export default function TopBar({
   scrollContainer,
   sections = [],
   onNavigate,
+  isHidden = false,
 }: TopBarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [currentSectionIndex, setCurrentSectionIndex] = useState(0);
@@ -95,8 +97,12 @@ export default function TopBar({
         x: "-50%",
       }}
       initial={{ opacity: 0.8 }}
-      animate={{ opacity: 1 }}
-      transition={{ duration: 0.2, ease: "easeOut" }}
+      animate={{
+        opacity: isHidden ? 0 : 1,
+        y: isHidden ? -20 : 0,
+        pointerEvents: isHidden ? "none" : "auto",
+      }}
+      transition={{ duration: 0.3, ease: "easeOut" }}
     >
       <motion.nav
         className="w-full border"

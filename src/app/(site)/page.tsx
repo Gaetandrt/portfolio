@@ -8,10 +8,11 @@ import Hero from "@/components/sections/hero";
 import Projects from "@/components/sections/projects";
 import StackContainer from "@/components/stack-container";
 import TopBar from "@/components/top-bar";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
 export default function Home() {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const navigateToSection = (sectionIndex: number) => {
     const container = scrollContainerRef.current;
@@ -36,7 +37,7 @@ export default function Home() {
       className: "bg-white",
     },
     {
-      component: <Projects />,
+      component: <Projects onModalStateChange={setIsModalOpen} />,
       className: "bg-black",
     },
     {
@@ -57,6 +58,7 @@ export default function Home() {
           scrollContainer={scrollContainerRef}
           sections={sections}
           onNavigate={navigateToSection}
+          isHidden={isModalOpen}
         />
         {sections.map((section, index) => (
           <StackContainer

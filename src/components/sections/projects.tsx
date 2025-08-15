@@ -1,11 +1,20 @@
 "use client";
 
+import { Project, ProjectCard } from "@/components/project-card";
+import { ProjectModal } from "@/components/project-modal";
+import { projects } from "@/data/projects";
 import { motion, useInView } from "motion/react";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
-function Projects() {
+interface ProjectsProps {
+  onModalStateChange?: (isOpen: boolean) => void;
+}
+
+function Projects({ onModalStateChange }: ProjectsProps) {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.3 });
+  const [selectedProject, setSelectedProject] = useState<Project | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const containerVariants = {
     hidden: { opacity: 0 },
     visible: {
@@ -27,6 +36,18 @@ function Projects() {
         ease: "easeOut" as const,
       },
     },
+  };
+
+  const openProjectModal = (project: Project) => {
+    setSelectedProject(project);
+    setIsModalOpen(true);
+    onModalStateChange?.(true);
+  };
+
+  const closeProjectModal = () => {
+    setIsModalOpen(false);
+    setSelectedProject(null);
+    onModalStateChange?.(false);
   };
 
   return (
@@ -55,59 +76,23 @@ function Projects() {
           initial="hidden"
           animate={isInView ? "visible" : "hidden"}
         >
-          {[1, 2, 3, 4, 5, 6].map((i) => (
-            <motion.div
-              key={i}
-              className="bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow"
+          {projects.map((project, index) => (
+            <ProjectCard
+              key={project.id}
+              project={project}
+              index={index}
               variants={itemVariants}
-              whileHover={{
-                y: -5,
-                transition: { duration: 0.2 },
-              }}
-              data-highlight
-            >
-              <motion.div
-                className="h-48 bg-gradient-to-br from-blue-400 to-purple-500"
-                initial={{ scale: 1.1 }}
-                animate={{ scale: 1 }}
-                transition={{ duration: 0.6, delay: i * 0.1 }}
-              />
-              <div className="p-6">
-                <motion.h3
-                  className="text-xl font-semibold mb-2"
-                  initial={{ opacity: 0, x: -20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ duration: 0.5, delay: 0.4 + i * 0.1 }}
-                >
-                  Projet {i}
-                </motion.h3>
-                <motion.p
-                  className="text-gray-600 mb-4"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.5 + i * 0.1 }}
-                >
-                  Description du projet avec les technologies utilisées et les
-                  défis relevés.
-                </motion.p>
-                <motion.div
-                  className="flex space-x-2"
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.5, delay: 0.6 + i * 0.1 }}
-                >
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                    React
-                  </span>
-                  <span className="px-3 py-1 bg-green-100 text-green-800 rounded-full text-sm">
-                    Next.js
-                  </span>
-                </motion.div>
-              </div>
-            </motion.div>
+              onOpenModal={openProjectModal}
+            />
           ))}
         </motion.div>
       </motion.div>
+
+      <ProjectModal
+        project={selectedProject}
+        isOpen={isModalOpen}
+        onClose={closeProjectModal}
+      />
     </section>
   );
 }

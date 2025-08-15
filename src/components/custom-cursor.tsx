@@ -2,7 +2,7 @@
 
 import { useMobile } from "@/hooks/use-mobile";
 import { motion, useMotionValue, useSpring } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function LightCursor() {
   const cursorX = useMotionValue(-100);
@@ -18,8 +18,6 @@ export function LightCursor() {
   const [isVisible, setIsVisible] = useState(false);
   const [currentBackground, setCurrentBackground] = useState("dark");
   const isMobile = useMobile();
-
-  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const getLightColor = () => {
     if (isBackgroundElement) {
@@ -39,15 +37,6 @@ export function LightCursor() {
       cursorX.set(e.clientX);
       cursorY.set(e.clientY);
 
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
-
-      timeoutRef.current = setTimeout(() => {
-        cursorX.set(-100);
-        cursorY.set(-100);
-      }, 2000);
-
       const element = document.elementFromPoint(e.clientX, e.clientY);
 
       if (element) {
@@ -56,7 +45,12 @@ export function LightCursor() {
 
         const isHighlightElement =
           element.hasAttribute("data-highlight") ||
-          element.closest("[data-highlight]") !== null;
+          element.closest("[data-highlight]") !== null ||
+          element.closest("button") !== null ||
+          element.closest("a") !== null ||
+          element.tagName === "BUTTON" ||
+          element.tagName === "A" ||
+          computedStyle.cursor === "pointer";
 
         const isBackgroundEl =
           element.hasAttribute("data-background-highlight") ||
@@ -127,9 +121,6 @@ export function LightCursor() {
       window.removeEventListener("mousemove", updateMousePosition);
       document.removeEventListener("mouseleave", handleMouseLeave);
       clearTimeout(showTimeout);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-      }
       document.body.classList.remove("background-illuminated");
     };
   }, [cursorX, cursorY, isMobile]);
@@ -149,8 +140,20 @@ export function LightCursor() {
         <motion.div
           className="relative flex items-center justify-center"
           animate={{
-            scale: isBackgroundElement ? 2 : isPointer ? 1.5 : 1,
-            opacity: isBackgroundElement ? 0.9 : isPointer ? 0.7 : 1,
+            scale: isBackgroundElement
+              ? 2
+              : isPointer
+              ? 1.5
+              : isHovering
+              ? 1.3
+              : 1,
+            opacity: isBackgroundElement
+              ? 0.9
+              : isPointer
+              ? 0.7
+              : isHovering
+              ? 0.8
+              : 1,
           }}
           transition={{ duration: 0.15 }}
         >

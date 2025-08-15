@@ -40,7 +40,7 @@ function About() {
               transition={{ duration: 0.6, delay: 0.6 }}
             >
               Je suis un développeur web passionné avec une expertise en React,
-              Next.js et les technologies modernes. J'aime créer des expériences
+              Next.js et les technologies modernes. J&apos;aime créer des expériences
               utilisateur innovantes et performantes.
             </motion.p>
             <motion.p

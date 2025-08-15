@@ -24,7 +24,7 @@ function Hero() {
           animate={isInView ? { opacity: 1, y: 0 } : { opacity: 0, y: 30 }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
         >
-          Hello, I'm{" "}
+          Hello, I&apos;m{" "}
           <motion.span
             className="text-gray-300"
             initial={{ opacity: 0 }}
